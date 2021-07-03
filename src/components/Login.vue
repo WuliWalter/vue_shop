@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { getLoginResponse } from '../network/login'
+// import { getLoginResponse } from '../network/login'
 export default {
   data() {
     return {
@@ -61,7 +61,7 @@ export default {
     login() {
       this.$refs.LoginFormRef.validate(async valid => {
         if (!valid) return
-        const { data: res } = await getLoginResponse(this.loginForm)
+        const { data: res } = await this.$http.post('login', this.loginForm)
         // console.log(res)
         if (res.meta.status !== 200) return this.$message.error('登录失败')
         this.$message.success('登录成功')

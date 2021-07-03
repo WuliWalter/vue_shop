@@ -11,12 +11,17 @@
     <!-- 页面主体 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">
+      <el-aside :width="isCollapse ? '64px' : '200px'">
+        <div class="toggle_menu" @click="toggleMenu()">|||</div>
         <el-menu
-          default-active="2"
+          :default-active="currentIndex"
           background-color="#313743"
           text-color="#fff"
           active-text-color="#409EFF"
+          unique-opened
+          :collapse="isCollapse"
+          :collapse-transition="false"
+          router
         >
           <el-submenu
             :index="item.id + ''"
@@ -28,9 +33,10 @@
               <span>{{ item.authName }}</span>
             </template>
             <el-menu-item
-              :index="childItem.id + ''"
+              :index="'/' + childItem.path"
               v-for="childItem in item.children"
               :key="childItem.id"
+              @click="getIndex('/' + childItem.path)"
             >
               <template slot="title">
                 <i class="el-icon-menu"></i>
@@ -41,7 +47,9 @@
         </el-menu>
       </el-aside>
       <!-- 右侧主体内容 -->
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -58,22 +66,36 @@ export default {
         101: 'iconfont icon-shangpin',
         102: 'iconfont icon-danju',
         145: 'iconfont icon-baobiao'
-      }
+      },
+      isCollapse: false,
+      currentIndex: ''
     }
   },
   created() {
     this.getMenuList()
+    this.currentIndex = window.sessionStorage.getItem('currentIndex')
   },
   methods: {
     logout() {
       window.sessionStorage.clear()
       this.$router.push('/login')
     },
+
+    // 获取所有菜单
     async getMenuList() {
       const { data: res } = await getMenuData()
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
-      console.log(this.menuList)
+      // console.log(this.menuList)
+    },
+
+    toggleMenu() {
+      this.isCollapse = !this.isCollapse
+    },
+
+    getIndex(currentIndex) {
+      window.sessionStorage.setItem('currentIndex', currentIndex)
+      this.currentIndex = currentIndex
     }
   }
 }
@@ -101,8 +123,21 @@ export default {
 }
 .el-aside {
   background-color: #313743;
+  .el-menu {
+    border: none;
+  }
 }
 .el-main {
   background-color: #e9edf0;
+}
+.toggle_menu {
+  background-color: #4a5064;
+  font-size: 12px;
+  color: #fff;
+  letter-spacing: 5px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
 }
 </style>
