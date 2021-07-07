@@ -14,7 +14,7 @@ body,
   margin-bottom: 15px;
   font-size: 12px;
 }
-.el-pagination{
+.el-pagination {
   margin-top: 15px;
 }
 
@@ -26,3 +26,14 @@ body,
   margin-top: 10px;
   font-size: 13px;
 }
+.el-tabs--left {
+  margin: 50px 0;
+}
+
+.el-checkbox {
+  margin: 10px;
+}
+.ql-editor {
+  min-height: 300px;
+}
+
